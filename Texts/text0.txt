@@ -1,0 +1,287 @@
+corrupted system                                          
+pao/boot.img not detected                                          
+E:0xFFFF                                          
+model:pao g7 pro                                          
+          ⚠️                                          
+red text:Your device has failed verification and may not work properly.                                          
+blue text:The bootloader is unlocked and software integrity cannot be guaranteed.                                          
+red text background color black:Press power key to continue.                                        
+code:                                        
+ui*                                        
+corrupted*                                        
+char* error[] ='corrupted';                                      
+! Your device is corrupt. It can't be trusted and may not work properly.  Visit this on another device: g.co/ABH  < Press power key to continue. >                                     
+ERROR: Failed to verify image. or ERROR: Boot verification failed.  Status: 0x3000 Reason: VBMETA HASH MISMATCH or Reason: Failed to load/verify stage 2.  DECIMAL CODE: 12288                                    
+ > reset                                    
+Warning:yes or no? [Y/n]                                  
+ui_code{                                  
+#include <stdio.h>                                  
+#include <stdlib.h>                                  
+#include <string.h>                                  
+                                  
+// --- Definicoes de Acoes de Baixo Nivel (Hardware/Particao) ---                                  
+// Em um sistema real, essas funções interagem com o hardware e partições.                                  
+// Aqui, elas são declaradas para simular a estrutura do código real.                                  
+                                  
+void reboot_system() {                                  
+    // Ação real: Chama a API do bootloader para reiniciar o sistema.                                  
+    // Ex: ioctl(REBOOT_CMD, REBOOT_NORMAL);                                  
+    printf("\n[REBOOT] Iniciando o sistema normalmente...\n");                                  
+    // exit(0); // Em um sistema real, o controle não voltaria.                                  
+}                                  
+                                  
+void wipe_data() {                                  
+    // Ação real: Formata as partições /data e /cache.                                  
+    // Ex: format_partition("/data"); format_partition("/cache");                                  
+    printf("\n[WIPE] Limpando partição de dados (Factory Reset)... Completo!\n");                                  
+}                                  
+                                  
+void apply_update_from_sdcard() {                                  
+    // Ação real: Monta o SD card e inicia a verificação e o flashing do pacote OTA.                                  
+    // Ex: mount("/sdcard"); install_package("/sdcard/update.zip");                                  
+    printf("\n[UPDATE] Aplicando atualização do SD Card... Falha: Arquivo nao encontrado.\n");                                  
+}                                  
+                                  
+// --- Estrutura da Interface do Menu ---                                  
+                                  
+#define MENU_SIZE 4                                  
+                                  
+void show_menu(const char *menu_items[], int selected) {                                  
+    system("clear"); // Limpa a tela (depende do ambiente).                                  
+    printf("--- Recovery Mode Interface ---\n");                                  
+    printf("Versao: 1.0.pao\n\n");                                  
+                                  
+    for (int i = 0; i < MENU_SIZE; i++) {                                  
+        if (i == selected) {                                  
+            printf(">>> %s <<<\n", menu_items[i]); // Item selecionado                                  
+        } else {                                  
+            printf("    %s\n", menu_items[i]);                                  
+        }                                  
+    }                                  
+    printf("\nUse 'w'/'s' para navegar, 'k' ou 'enter' para selecionar.\n");                                  
+}                                  
+                                  
+int main() {                                  
+    const char *menu_items[MENU_SIZE] = {                                  
+        "Reboot system now",                                  
+        "Wipe data/factory reset",                                  
+        "Apply update from SD card",                                  
+        "Power off"                                  
+    };                                  
+                                  
+    int selected_item = 0;                                  
+    char command;                                  
+                                  
+    while (1) {                                  
+        show_menu(menu_items, selected_item);                                  
+                                          
+        // Simulação da leitura de teclas (embutido no loop para simplicidade)                                  
+        // Em um sistema real, isso seria lido do buffer de KEY_VOLUMEUP/KEY_POWER.                                  
+        scanf(" %c", &command);                                   
+                                  
+        if (command == 's') { // Navegar para baixo                                  
+            selected_item = (selected_item + 1) % MENU_SIZE;                                  
+        } else if (command == 'w') { // Navegar para cima                                  
+            selected_item = (selected_item - 1 + MENU_SIZE) % MENU_SIZE;                                  
+        } else if (command == 'k' || command == '\n') { // Selecionar                                  
+            switch (selected_item) {                                  
+                case 0:                                  
+                    reboot_system();                                  
+                    return 0; // Sai do programa                                  
+                case 1:                                  
+                    wipe_data();                                  
+                    break;                                  
+                case 2:                                  
+                    apply_update_from_sdcard();                                  
+                    break;                                  
+                case 3:                                  
+                    printf("\n[POWER] Desligando dispositivo...\n");                                  
+                    return 0; // Sai do programa                                  
+            }                                  
+        }                                  
+    }                                  
+                                  
+    return 0;                                  
+}                                  
+}                              
+------------------------------------------------- [! DEVICE CORRUPTION WARNING !] -------------------------------------------------  Your device has failed a critical verification check. It is no longer trusted and cannot load the Android operating system. Your data stored on this device may be compromised.  FAILURE REASON CODE: 0x3000 VERIFICATION STATUS: VBMETA HASH MISMATCH BOOTLOADER STAGE: SECONDARY  ACTION REQUIRED: Please attempt a 'Factory Data Reset' to restore secure boot integrity. If the problem persists, the hardware may be permanently damaged.  Press POWER key to attempt system recovery. (This action may fail due to image corruption.)  --- DEBUG INFO: SLOT: a (corrupted) BUILD ID: RP1A.200720.011.A1 KERNEL VERSION: 4.14.238-g7726487d ---                            
+*** SYSTEM KERNEL PANIC: CORRUPTION ERROR 0xDEADBEEF *** [FAIL] init: Critical data structure integrity check FAILED (CRC_MISMATCH) [FATAL] Bootloader Status: 0x3000 DEVICE STATE: UNTRUSTED  >>>>> OPERATING SYSTEM IMAGE IS CONDUCTED AND IRREPARABLE <<<<<  ---------------------------------------------------------------------- [0000.1234] <ERROR> FS_ROOT: /dev/block/bootdevice/by-name/system CORRUPTED [0000.1235] <WARN>  VBMETA integrity hash FAILED, falling back to emergency mode. [0000.1236] <ERROR> Android Runtime (ART) could not be initialized. [0000.1237] <ERROR> Security Policy violation detected. SELinux: DENIED. [0000.1238] [CRIT] No valid boot slot found. Slot A: Corrupt. Slot B: Unknown. [0000.1239] Segmentation Fault at address 0x00000000000040E0 (pid 1) [0000.1240] init: Timed out waiting for /dev/system_ext/ [0000.1241] **DATA LOSS IMMINENT. PROCEED WITH CAUTION.** [0000.1242] FAILED FAILED FAILED FAILED FAILED FAILED FAILED FAILED FAILED [0000.1243] **WARNING: Factory Reset Required. All Data Will Be ERASED.** [0000.1244] init: Service 'surfaceflinger' (pid 402) killed by signal 11 [0000.1245] ioctl(REBOOT_CMD) failed: 22 Invalid argument.  ---------------------------------------------------------------------- *** REPEATED ERROR MESSAGE *** ! Your operating system has been conducted. It cannot be trusted and will not function. Please contact support with code: 12288  ! Your operating system has been conducted. It cannot be trusted and will not function. Please contact support with code: 12288 ---------------------------------------------------------------------- < Press the power button to shut down or Volume Down for Recovery >                           
+!!! KERNEL PANIC: VFS: Unable to mount root fs on unknown block(2,0) !!! ----------------------------------------------------------------------  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.14.190-PAO-KERNEL-g7-model #1 SMP PREEMPT Hardware name: Generic G7 Model (DT) Call trace:  [<ffff0000000845a0>] dump_stack+0x90/0xc0  [<ffff000000080640>] panic+0x188/0x30c  [<ffff0000002ab468>] mount_block_root+0x160/0x240  [<ffff0000002ab568>] mount_root+0x5c/0x68  [<ffff0000002ab728>] prepare_namespace+0x1a8/0x1e4  [<ffff0000002aa1a0>] kernel_init_freeable+0x21c/0x250  [<ffff0000007e999c>] kernel_init+0x18/0x114  [<ffff00000008061c>] ret_from_fork+0x10/0x20  Kernel Offset: disabled ---[ end Kernel panic - not syncing: VFS: Unable to mount root fs ]--- <1>REBOOTING IN 30 SECONDS...                        
+Call trace:  [<ffff0000000845a0>] dump_stack+0x90/0xc0  [<ffff000000080640>] panic+0x188/0x30c  [<ffff0000002ab468>] mount_block_root+0x160/0x240  [<ffff0000002ab568>] mount_root+0x5c/0x68  [<ffff0000002ab728>] prepare_namespace+0x1a8/0x1e4  [<ffff0000002aa1a0>] kernel_init_freeable+0x21c/0x250  [<ffff0000007e999c>] kernel_init+0x18/0x114  [<ffff00000008061c>] ret_from_fork+0x10/0x20                      
+    .--.                      
+  |o_o |                      
+  |:_/ |                      
+ //   \ \                      
+(|     | )                      
+/'\_   _/`\                      
+\___)=(___/                      
+                      
+     ⚠️                      
+Linux pao g7 kernel fatal error                    
+!!! FATAL KERNEL TRAP: CORRUPTED VIRTUAL MEMORY (0xDEADBEEF) !!! SYSTEM HAS BEEN COMPROMISED AND HALTED.  ---------------------------------------------------------------------- [FAIL_INIT] Init Process (PID 1) failed to launch. Reason: Integrity Check FAILED. [ERROR] VBMETA: Signature verification failed. CODE: 0x3000  --- MEMORY MAP DUMP --- ADDRESS      TYPE       SIZE (KB)   STATUS 0x10000000   Kernel     16384       [CORRUPT]  <-- RED 0x21000000   System     131072      [INVALID_FS]  <-- YELLOW 0x30000000   Data       262144      [DIRTY_BIT] 0x40000000   Cache      65536       [FREE]     <-- AQUI ESTÁ O FREE! 0x50000000   UserApp    1024        [SEGFAULT] <-- RED  TRACE: UNHANDLED EXCEPTION in process 0 [<ffff0000001a1bc0>] page_fault+0x120/0x3a0 [<ffff0000000a2d34>] kthread_should_stop+0x10c/0x13c [<ffff0000007829a4>] schedule_tail+0x4c/0x2c0  SELINUX_DENIALS_COUNT: 42 FS_STATE: READ_ONLY_FAILURE  --- SYSTEM HALTED --- ** WARNING: YOUR DATA IS LIKELY CORRUPTED AND INACCESSIBLE. ** PERFORM FACTORY RESET OR REFLASH FIRMWARE.                   
+[ A CESS D ENIED ]  [ C R I T I C AL K ERNEL F AULT ]                  
+----------------------------------------------------------------------                  
+SYSTEM CRASH REPORT - (VERIFIED BOOT FAILURE)                  
+----------------------------------------------------------------------                  
+                  
+                                ┌─────────────────┐                  
+                                │                 │                  
+                                │    █████████    │                  
+                                │    █  ▲ ▲  █    │                  
+                                │    █  │ │  █    │                  
+                                │    █ ───── █    │                  
+                                │    █   !   █    │                  
+                                │    █  ─────  █    │                  
+                                │    █  ▲ ▲  █    │                  
+                                │    █████████    │                  
+                                │                 │                  
+                                └─────────────────┘                  
+                  
+                !! BOOTLOADER VERIFICATION FAILED !!                  
+             !! OS IMAGE CORRUPT OR TAMPERED WITH !!                  
+                  
+----------------------------------------------------------------------                  
+[0000.0001] <RED> ERROR: fs_mgr: Unable to mount /dev/block/by-name/system_a (errno 2)                  
+[0000.0002] <YELLOW> WARNING: dm-verity: device /dev/block/dm-0 has been corrupted.                  
+[0000.0003] <GREEN> INFO: Kernel version: 4.14.190-g7-model #1 SMP PREEMPT                  
+[0000.0004] <BLUE> DEBUG: Boot state: RED - UNTRUSTED                  
+[0000.0005] <RED> FATAL: init: [C] Process 'android.hardware.health@2.0-service' (pid 123) exited with status 137                  
+[0000.0006] <YELLOW> WARNING: Low memory killer: oom_badness() failed for pid 456                  
+[0000.0007] <MAGENTA> VBMETA: HASH MISMATCH (Expected 0xDEADBEEF, Got 0xBADC0FFEE)                  
+[0000.0008] <RED> KERNEL PANIC: VFS: Unable to mount root fs on unknown block(0,0)                  
+                  
+----------------------------------------------------------------------                  
+MEM DUMP:                  
+0x70000000 KERNEL_HEAP_BASE 16MB [CORRUPT]                  
+0x71000000 SYSTEM_PARTITION 128MB [INVALID]                  
+0x72000000 USER_DATA_SPACE 512MB [DIRTY]                  
+0x73000000 FREE_MEM_POOL 2048MB [AVAIL] <-- Aqui está o "FREE"                  
+----------------------------------------------------------------------                  
+[RECOVERY MODE AUTO-INITIATED]                  
+[PLEASE SELECT OPTION: FACTORY RESET (LOST DATA) OR POWER OFF]                  
+[ERROR CODE: 0x3000_VBF_KRN_MOUNT]  [SERIAL: XXXXXXXXXXXX]                  
+[ G P U ] [ D R I V E R ] [ K E R N E L ] [ F A I L ]                
+----------------------------------------------------------------------                
+$#@%&!! CRITICAL RENDERING ERROR 0xC0FFEE !!---                
+----------------------------------------------------------------------                
+                
+!! SYSTEM T EXT U R E M I S M A T C H !!                
+                
+$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@                
+(0x7FFFFFFF) T I M E O U T E X C E P T I O N  I R Q  : [V E R T I C A L B L A N K]                
+$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@$@!@                
+                
+G F X D R I V E R S T A C K T R A C E ( P A R T I A L L Y C O R R U P T E D )                
+[0xBADF00D] glDrawElements() called outside of glBegin/glEnd block                
+[0x9A2C1B4] i915_gem_context_get_active_kernel_context: [ACCESS DENIED]                
+[0x27D56A8] K E R N E L M E M O R Y W R I T E F A I L U R E @ 0 x B E E F C A C E                
+[0xAAAAAA] M M I O R E G I S T E R L O C K H A N G                
+                
+----------------------------------------------------------------------                
+D I S P L A Y D R I V E R I N F O R M A T I O N:                
+M A N U F A C T U R E R : !@#$!@#$!@#$!@#$                
+D E V I C E I D : 0 X C O R E B L A S T E R 9 0 0 0 ( C O R R U P T E D )                
+V R A M S T A T U S : 2 5 6 M B ( A L L O C A T I O N F A I L E D )                
+                
+----------------------------------------------------------------------                
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \                
+C O U L D N O T I N I T I A T E G R A P H I C A L I N T E R F A C E ( F A T A L )                
+/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /              
+A$CDE%GH!JKLM&OPQR%TUVWX*YZabcde#fghijk&lmnopq@rstuvwx%yz1234#67890            
+LITHIUM DETECTED            
+red monospace text: !!! CRITICAL SECURITY ALERT: LITHIUM DETECTED !!!            
+red monospace text:             
+red monospace text: KERNEL HALTED DUE TO UNEXPECTED PHYSICAL ACCESS/TAMPERING.            
+red monospace text:             
+red monospace text: --- BOOTLOADER LOCK STATUS: UNKNOWN ---            
+red monospace text: [LITHIUM_HALT] Initiating System Self-Destruct Sequence (Mockup).            
+red monospace text:             
+red monospace text: LOG EVENT 0x9001: Sensor readout anomaly. Voltage (V): 4.45V (OUT OF RANGE)            
+red monospace text: LOG EVENT 0x9002: Temperature (T): 75.8°C (DANGER ZONE)            
+red monospace text: LOG EVENT 0x9003: Physical device integrity check failed.            
+red monospace text:             
+red monospace text: CALL TRACE (SECURITY EXCEPTION):            
+red monospace text: [<ffff000000a2b5e0>] security_monitor_fail+0x180/0x240            
+red monospace text: [<ffff00000028e3d4>] charge_safety_trigger+0x3c/0x60            
+red monospace text: [<ffff000000080640>] panic+0x188/0x30c            
+red monospace text:             
+red monospace text: ** DEVICE IS UNUSABLE. PLEASE CONTACT OEM SUPPORT. **            
+red monospace text:             
+red monospace text: -- SYSTEM FAILED AT T=1.234s --            
+google/walleye/walleye  <-- Nome do Fabricante/Modelo          
+10/QQ1A.200105.000/6027178  <-- Versão do Android/Build          
+user/release-keys          
+          
+Use volume keys to move, and power button to select.          
+          
+> Reboot system now          
+  Reboot to bootloader          
+  Apply update from ADB          
+  Apply update from SD card          
+  Wipe data/factory reset          
+  Wipe cache partition          
+  Mount /system          
+  View recovery logs          
+  Run graphics test          
+  Power off          
+          
+< Your data may be corrupt. If you continue to get this message, you may need to perform a factory data reset. >        
+----------------------------------------------------------------------        
+FASTBOOT MODE (ENGINEERING BUILD)        
+----------------------------------------------------------------------        
+        
+PRODUCT_NAME: pao_g7        
+VARIANT: P20_Global        
+BOOTLOADER VERSION: v1.1.2-beta        
+DEVICE STATE: unlocked        
+        
+>>>>> Use Volume keys to navigate, Power to select <<<<<        
+        
+> START (NORMAL BOOT)        
+  RESTART BOOTLOADER        
+  RECOVERY MODE        
+  POWER OFF        
+        
+----------------------------------------------------------------------        
+[ FASTBOOT D E B U G L O G S ]        
+----------------------------------------------------------------------        
+        
+[0.001s] <GREEN> INFO: PMIC initialized successfully. Chip ID: 0x48A0        
+[0.005s] <GREEN> INFO: Memory test passed. Total RAM available: 8192 MB        
+[0.012s] <YELLOW> WARNING: Device configuration file (dtbo.img) has been modified.        
+[0.020s] <YELLOW> WARNING: Charger port detected: Fast-charge protocol negotiation failure.        
+[0.035s] <RED> ERROR: VBMETA verification failed! Boot image signature mismatch. Code: 0x3000        
+[0.040s] <RED> FATAL: Security fuse check failed. Device state is UNTRUSTED.        
+[0.045s] <BLUE> DEBUG: System calls limited to fastboot commands only.        
+[0.050s] <GREEN> INFO: Waiting for fastboot command...      
+============================================================      
+! ! ! DISPLAY FAILURE ! ! !      
+============================================================      
+       
+$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%      
+%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#%#      
+       
+[ WARNING: GRAPHICS HARDWARE READ ERROR ]      
+       
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #      
+       
+[ D I S P L A Y B U F F E R C O R R U P T E D ]      
+       
+============================================================      
+       
+< V R A M A L L O C A T I O N F A I L E D 0 x C A F E >      
+       
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -       
+       
+[ A C T I O N : P O W E R C Y C L E R E Q U I R E D ]      
+       
+============================================================    
+> Reboot system now    
+  Wipe data/factory reset    
+  Apply update from SD card    
+  Power off  
+!!! CRITICAL SECURITY ALERT: LITHIUM DETECTED !!!  
+SYSTEM HALTED DUE TO UNEXPECTED PHYSICAL ACCESS/TAMPERING.  
+VBMETA HASH MISMATCH (Expected 0xDEADBEEF, Got 0xBADC0FFEE)  
+KERNEL PANIC: Unable to mount root fs on unknown block(2,0)
