@@ -290,4 +290,7 @@ LICENSE_paoOS('GNU GENRAL ... 3.0v')
 apps!apps :=%apps
 dock!dock :=%dock
 red monospace text:no command error site:pao.co/command
-red monospace text:no command error site:pao.co/commandred monospace text:no command error site:pao.co/commandred monospace text:no command error site:pao.co/commandred monospace text:no command error site:pao.co/command
+red monospace text:no command error site:pao.co/command
+red monospace text:no command error site:pao.co/command
+red monospace text:no command error site:pao.co/command
+red monospace text:no command error site:pao.co/command
