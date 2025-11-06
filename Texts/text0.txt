@@ -286,3 +286,6 @@ SYSTEM HALTED DUE TO UNEXPECTED PHYSICAL ACCESS/TAMPERING.
 VBMETA HASH MISMATCH (Expected 0xDEADBEEF, Got 0xBADC0FFEE)  
 KERNEL PANIC: Unable to mount root fs on unknown block(2,0)
 LICENSE_paoOS('GNU GENRAL ... 3.0v')
+|--ui--|
+apps!apps :=%apps
+dock!dock :=%dock
